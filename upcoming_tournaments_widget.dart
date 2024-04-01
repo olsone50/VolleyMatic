@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '_tournaments.dart';
 import '_calendar.dart';
 
+class UpcomingTournamentsWidget extends StatelessWidget {
+  const UpcomingTournamentsWidget({super.key});
 
-class _HomeScreenState extends StatelessWidget{
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,39 +22,31 @@ class _HomeScreenState extends StatelessWidget{
           )
         ],
       ),
-    );
-  }
-}
-
-class HomeScreenBody extends StatelessWidget {
-  const HomeScreenBody({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: tournaments.length,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: const EdgeInsets.all(8.0),
-          color: Colors.red,
-          child: ListTile(
-            title: Text(
-              tournaments[index].title,
-              style: const TextStyle(color: Colors.white)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Date: ${tournaments[index].date}',
-                  style: const TextStyle(color: Colors.white)),
-                Text(
-                  'Location: ${tournaments[index].location}',
-                  style: const TextStyle(color: Colors.white)),
-              ],
+      body: ListView.builder(
+        itemCount: tournaments.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            color: Colors.red,
+            child: ListTile(
+              title: Text(
+                tournaments[index].name,
+                style: const TextStyle(color: Colors.white)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Date: ${tournaments[index].date}',
+                    style: const TextStyle(color: Colors.white)),
+                  Text(
+                    'Location: ${tournaments[index].location}',
+                    style: const TextStyle(color: Colors.white)),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
