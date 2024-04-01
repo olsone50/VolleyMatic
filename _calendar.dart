@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:volley_matic/upcoming_tournaments_widget.dart';
 import '_tournaments.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -15,16 +16,16 @@ class CalendarWidget extends StatelessWidget {
     Map<DateTime, List<String>> events = {};
 
     for (var tournament in tournaments) {
-      DateTime date = DateTime.parse(tournament.date);
+      DateTime date = tournament.date;
       events.update(date, (value) {
         // ignore: unnecessary_null_comparison
         if (value != null) {
-          value.add(tournament.title);
+          value.add(tournament.name);
           return value;
         } else {
-          return [tournament.title];
+          return [tournament.name];
         }
-      }, ifAbsent: () => [tournament.title]);
+      }, ifAbsent: () => [tournament.name]);
     }
 
     // Find the closest upcoming tournament
@@ -32,14 +33,29 @@ class CalendarWidget extends StatelessWidget {
     DateTime closestDate = DateTime(9999, 12, 31); // Initialize with a far future date
 
     for (var tournament in tournaments) {
-      DateTime date = DateTime.parse(tournament.date);
+      DateTime date = tournament.date;
       if (date.isAfter(now) && date.isBefore(closestDate)) {
         closestDate = date;
         closestTournament = tournament;
       }
     }
 
-    return Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Upcoming Tournaments'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UpcomingTournamentsWidget()),
+              );
+            }
+          )
+        ],
+      ),
+      body: Column(
       children: [
         // Calendar
         Padding(
@@ -91,7 +107,7 @@ class CalendarWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Title: ${closestTournament.title}',
+                          'Title: ${closestTournament.name}',
                           style: const TextStyle(color: Colors.white)),
                         Text(
                           'Date: ${closestTournament.date}',
@@ -106,6 +122,7 @@ class CalendarWidget extends StatelessWidget {
               )
             : Container(), // If no upcoming tournament found, display an empty container
       ],
+    ),
     );
   }
 }
