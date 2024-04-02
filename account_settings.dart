@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:volley_matic/volley_matic.dart';
 
-class SettingsWidget extends StatelessWidget {
-  const SettingsWidget({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key, required VolleymaticModel model});
+
+  @override
+  State<Settings> createState() => SettingsWidget();
+}
+
+class SettingsWidget extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+      ),
+      body: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
@@ -116,6 +127,7 @@ class SettingsWidget extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }
