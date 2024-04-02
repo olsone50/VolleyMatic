@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'volleymatic_model.dart';
+import 'package:volley_matic/volley_matic.dart';
+//import 'volleymatic_model.dart';
 import 'upcoming_tournaments_widget.dart';
-import 'schedule_widget.dart';
-import 'standings_widget.dart';
+//import 'schedule_widget.dart';
+//import 'standings_widget.dart';
 import 'account_settings.dart';
+import '_schedule.dart';
+import '_standings.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -24,18 +27,18 @@ class _MainAppState extends State<MainApp> {
   final List<Widget> _tabs = [
     Consumer<VolleymaticModel>(
       builder: (context, volleymaticModel, child) =>
-          UpcomingTournamentsWidget(model: volleymaticModel),
+          UpcomingTournaments(model: volleymaticModel),
     ),
     Consumer<VolleymaticModel>(
         builder: (context, volleymaticModel, child) =>
-            ScheduleWidget(model: volleymaticModel)),
+            Schedule(model: volleymaticModel)),
     Consumer<VolleymaticModel>(
       builder: (context, volleymaticModel, child) =>
-          StandingsWidget(model: volleymaticModel),
+          Standings(model: volleymaticModel),
     ),
     Consumer<VolleymaticModel>(
       builder: (context, volleymaticModel, child) =>
-          AccountSettingsWidget(model: volleymaticModel),
+          Settings(model: volleymaticModel),
     ),
   ];
   int selectedTabIndex = 0;
@@ -45,7 +48,7 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
         theme: ThemeData(primaryColor: Colors.red), // makes the primary color red
         home: Scaffold(
-          appBar: AppBar(title: SizedBox(width: 70, height: 70, child: Image.asset('assets/logo.png')), centerTitle: true,), // puts the logo in the app bar and centers it
+          //appBar: AppBar(title: SizedBox(width: 70, height: 70, child: Image.asset('assets/logo.png')), centerTitle: true,), // puts the logo in the app bar and centers it
           body: _tabs[selectedTabIndex], // sets tab view to the selected tab
           bottomNavigationBar: BottomNavigationBar( // creates a bottom navigation bar for the app
             items: const [
