@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
-import '_tournaments.dart';
+import 'package:volley_matic/match_details.dart';
+import 'package:volley_matic/tournament.dart';
 import '_calendar.dart';
+import 'volley_matic.dart';
 
-class UpcomingTournamentsWidget extends StatelessWidget {
-  const UpcomingTournamentsWidget({super.key});
+class UpcomingTournaments extends StatefulWidget {
+  const UpcomingTournaments({super.key, required VolleymaticModel model});
 
+  @override
+  State<UpcomingTournaments> createState() => UpcomingTournamentsWidget();
+}
+
+class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
 @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +23,7 @@ class UpcomingTournamentsWidget extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CalendarWidget()),
+                MaterialPageRoute(builder: (context) => Calendar(model: VolleymaticModel())),
               );
             }
           )
@@ -29,6 +36,7 @@ class UpcomingTournamentsWidget extends StatelessWidget {
             margin: const EdgeInsets.all(8.0),
             color: Colors.red,
             child: ListTile(
+              onTap: () {tapped(tournaments[index]);},
               title: Text(
                 tournaments[index].name,
                 style: const TextStyle(color: Colors.white)),
@@ -48,5 +56,9 @@ class UpcomingTournamentsWidget extends StatelessWidget {
         },
       ),
     );
+  }
+  
+ tapped(Tournament tournaments) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));         
   }
 }
