@@ -1,4 +1,11 @@
-class SettingsWidgetLogOut extends State<Settings> {
+class SettingsLogOut extends StatefulWidget {
+  const SettingsLogOut({super.key, required VolleymaticModel model});
+
+  @override
+  State<SettingsLogOut> createState() => SettingsWidgetLogOut();
+}
+
+class SettingsWidgetLogOut extends State<SettingsLogOut> {
   @override
   Widget build(BuildContext context) {
     return Padding(
