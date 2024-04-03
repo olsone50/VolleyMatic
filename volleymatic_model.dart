@@ -3,12 +3,6 @@ import 'tournament.dart';
 import 'team.dart';
 import 'game.dart';
 
-var tournaments = [ // creates a list of tournaments that stores the name, location, date, and number of courts
-    Tournament(name: 'Bay Bash 14s/15s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 13), numCourts: 3),
-    Tournament(name: 'Ice Breaker 17s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 14), numCourts: 3),
-    Tournament(name: 'Bay Bash 16s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 20), numCourts: 3),
-  ];
-
 class VolleymaticModel extends ChangeNotifier {
   var tournaments = [ // creates a list of tournaments that stores the name, location, date, and number of courts
     Tournament(name: 'Bay Bash 14s/15s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 13), numCourts: 3),
