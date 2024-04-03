@@ -78,7 +78,7 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
               child: IconButton(
                 icon: const Icon(Icons.add, color: Colors.white),
                 onPressed: () {
-                  //Handle Button Press
+                  addTapped();
                 },
               ),
             ),
