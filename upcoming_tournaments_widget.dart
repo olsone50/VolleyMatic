@@ -42,7 +42,7 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
                   margin: const EdgeInsets.all(8.0),
                   color: Colors.red,
                   child: ListTile(
-                    onTap: () { tapped(tournaments[index]); },
+                    onTap: () { tournamentTapped(tournaments[index]); },
                     title: Text(
                       tournaments[index].name,
                       style: const TextStyle(color: Colors.white),
@@ -88,7 +88,12 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
     );
   }
 
-  tapped(Tournament tournaments) {
+  tournamentTapped(Tournament tournaments) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
+  }
+
+  //Should Navigate to add tournments page but navigates to MatchDetails as placeholder
+  addTapped() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
   }
 }
