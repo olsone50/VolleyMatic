@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:volley_matic/volley_matic.dart';
-//import 'volleymatic_model.dart';
+import 'volleymatic_model.dart';
 import 'upcoming_tournaments_widget.dart';
 //import 'schedule_widget.dart';
 //import 'standings_widget.dart';

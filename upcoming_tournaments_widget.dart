@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:volley_matic/match_details.dart';
-import 'package:volley_matic/tournament.dart';
-import '_calendar.dart';
-import 'volley_matic.dart';
+import 'match_details.dart';
+import 'tournament.dart';
+import 'volleymatic_model.dart';
 
 class UpcomingTournaments extends StatefulWidget {
-  const UpcomingTournaments({super.key, required VolleymaticModel model});
+  final VolleymaticModel model; // Add this line to declare model as a property
+
+  const UpcomingTournaments({Key? key, required this.model}) : super(key: key);
 
   @override
   State<UpcomingTournaments> createState() => UpcomingTournamentsWidget();
 }
 
+
 class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
-
-  var tournaments = VolleymaticModel().tournaments;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,76 +23,47 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
           IconButton(
             icon: const Icon(Icons.calendar_today),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Calendar(model: VolleymaticModel())),
-              );
-            }
+              // Navigator.push(
+                // context,
+                // MaterialPageRoute(builder: (context) => Calendar(model: widget.model)), // Use widget.model here
+              // );
+            },
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: tournaments.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.red,
-                  child: ListTile(
-                    onTap: () { tournamentTapped(tournaments[index]); },
-                    title: Text(
-                      tournaments[index].name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Date: ${tournaments[index].date}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          'Location: ${tournaments[index].location}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+      body: ListView.builder(
+        itemCount: widget.model.tournaments.length, // Use widget.model.tournaments here
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            color: Colors.red,
+            child: ListTile(
+              onTap: () {
+                tapped(widget.model.tournaments[index]); // Use widget.model.tournaments here
               },
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.add, color: Colors.white),
-                onPressed: () {
-                  addTapped();
-                },
+              title: Text(
+                widget.model.tournaments[index].name, // Use widget.model.tournaments here
+                style: const TextStyle(color: Colors.white)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Date: ${widget.model.tournaments[index].date}', // Use widget.model.tournaments here
+                    style: const TextStyle(color: Colors.white)),
+                  Text(
+                    'Location: ${widget.model.tournaments[index].location}', // Use widget.model.tournaments here
+                    style: const TextStyle(color: Colors.white)),
+                ],
               ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
-
-  tournamentTapped(Tournament tournaments) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
-  }
-
-  //Should Navigate to add tournments page but navigates to MatchDetails as placeholder
-  addTapped() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
+  
+  tapped(Tournament tournament) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));         
   }
 }
+
