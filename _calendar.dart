@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:volley_matic/upcoming_tournaments_widget.dart';
 import 'tournament.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'volley_matic.dart';
+import 'volleymatic_Model.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({super.key, required VolleymaticModel model});
@@ -12,9 +11,6 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarWidget extends State<Calendar> {
-
-  var tournaments = VolleymaticModel().tournaments;
-
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
@@ -56,10 +52,10 @@ class CalendarWidget extends State<Calendar> {
           IconButton(
             icon: const Icon(Icons.list),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UpcomingTournaments(model: VolleymaticModel())),
-              );
+              // Navigator.push(
+                //context,
+                // MaterialPageRoute(builder: (context) => UpcomingTournaments(model: VolleymaticModel())),
+              // );
             }
           )
         ],

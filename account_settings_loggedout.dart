@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volley_matic/volley_matic.dart';
+import 'volleymatic_model.dart';
 
 class SettingsLogOut extends StatefulWidget {
   const SettingsLogOut({super.key, required VolleymaticModel model});

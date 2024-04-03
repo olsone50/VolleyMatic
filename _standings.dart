@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:volley_matic/volley_matic.dart';
+import 'volleymatic_model.dart';
 
 class Standings extends StatefulWidget {
-  const Standings({super.key, required VolleymaticModel model});
+  final VolleymaticModel model; // Define 'model' property
+
+  const Standings({Key? key, required this.model}) : super(key: key);
 
   @override
   State<Standings> createState() => StandingsWidget();
@@ -11,53 +13,36 @@ class Standings extends StatefulWidget {
 class StandingsWidget extends State<Standings> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Logout logic
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(horizontal: 20), // Adjust the padding as needed
-                    ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Delete account logic
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(horizontal: 20), // Adjust the padding as needed
-                    ),
-                    child: const Text(
-                      'Create an Account',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Standings'),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        child: DataTable(
+          headingRowColor: MaterialStateProperty.all(Colors.red),
+          columns: const [
+            DataColumn(label: Text('Team')),
+            DataColumn(label: Text('Wins')),
+            DataColumn(label: Text('Losses')),
+          ],
+          rows: widget.model.teams.asMap().entries.map((entry) {
+            final index = entry.key;
+            final team = entry.value;
+            final isEvenRow = index.isEven;
+            final backgroundColor = isEvenRow
+                ? Colors.red[100]
+                : null; // Change this to whatever color you prefer
+            return DataRow(
+              color: MaterialStateProperty.all(backgroundColor),
+              cells: [
+                DataCell(Text(team.name)),
+                DataCell(Text(team.winCount.toString())),
+                DataCell(Text(team.lossCount.toString())),
+              ],
+            );
+          }).toList(),
         ),
-        ],
       ),
     );
   }
