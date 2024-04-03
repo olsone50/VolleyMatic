@@ -19,17 +19,20 @@ class VolleymaticModel extends ChangeNotifier {
     Team(name: '1W 16 Silver', rank: 6, rosterPath: 'assets/1W 16 Silver Roster.png'), 
   ];
 
-  var games = [
+  var pool1Games = [ // creates a list of games for pool 1
     Game(team1: '1W 17 National', team2: '1W 18 National', workTeam: '1W 16 National', 
           time: '8:00 AM', courtNum: 1),
-    Game(team1: '1W 17 Crimson', team2: '1W 16 Crimson', workTeam: '1W 16 Silver', 
-          time: '8:00 AM', courtNum: 2),
     Game(team1: '1W 17 National', team2: '1W 16 National', workTeam: '1W 18 National', 
           time: '9:00 AM', courtNum: 1),
-    Game(team1: '1W 17 Crimson', team2: '1W 16 Silver', workTeam: '1W 16 Crimson', 
-          time: '9:00 AM', courtNum: 2),
     Game(team1: '1W 18 National', team2: '1W 16 National', workTeam: '1W 17 National', 
           time: '10:00 AM', courtNum: 1),
+  ];
+
+  var pool2Games = [
+    Game(team1: '1W 17 Crimson', team2: '1W 16 Crimson', workTeam: '1W 16 Silver', 
+          time: '8:00 AM', courtNum: 2),
+    Game(team1: '1W 17 Crimson', team2: '1W 16 Silver', workTeam: '1W 16 Crimson', 
+          time: '9:00 AM', courtNum: 2),
     Game(team1: '1W 16 Crimson', team2: '1W 16 Silver', workTeam: '1W 17 Crimson', 
           time: '10:00 AM', courtNum: 2),
   ];
@@ -40,5 +43,29 @@ class VolleymaticModel extends ChangeNotifier {
       names.add(tournament.name); // adds the name to the list of tournaments
     }
     return names; // returns a list of all the names of the tournaments
+  }
+
+  List<String> getPool1Names(){
+    List<String> names = [];
+    for(Game game in pool1Games){
+      if(!names.contains(game.team1)){
+        names.add(game.team1);// adds the team 1 name if not already in list
+      } else if(!names.contains(game.team2)){
+        names.add(game.team2); // adds the team 2 name if not already in list
+      }
+    }
+    return names; // returns a list of all the team names from pool 1
+  }
+
+  List<String> getPool2Names(){
+    List<String> names = [];
+    for(Game game in pool2Games){
+      if(!names.contains(game.team1)){
+        names.add(game.team1);// adds the team 1 name if not already in list
+      } else if(!names.contains(game.team2)){
+        names.add(game.team2); // adds the team 2 name if not already in list
+      }
+    }
+    return names; // returns a list of all the team names from pool 2
   }
 }
