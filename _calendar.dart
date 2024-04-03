@@ -12,6 +12,9 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarWidget extends State<Calendar> {
+
+  var tournaments = VolleymaticModel().tournaments;
+
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
