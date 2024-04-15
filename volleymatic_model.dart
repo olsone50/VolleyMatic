@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'tournament.dart';
 import 'team.dart';
 import 'game.dart';
 
 class VolleymaticModel extends ChangeNotifier {
+  void initializeSupabase() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await Supabase.initialize( // gets the database functionality for the model
+      url: 'https://thssqujpqkjapvwqfdal.supabase.co', // supabase project URL
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoc3NxdWpwcWtqYXB2d3FmZGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNTg4NTYsImV4cCI6MjAyNzgzNDg1Nn0.HFtkIhXMrPTYkaFbSsJnssBCfJHKajNYUhQCtYrjZuQ',
+    );
+  } 
+
   var tournaments = [ // creates a list of tournaments that stores the name, location, date, and number of courts
     Tournament(name: 'Bay Bash 14s/15s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 13), numCourts: 3),
     Tournament(name: 'Ice Breaker 17s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 14), numCourts: 3),
