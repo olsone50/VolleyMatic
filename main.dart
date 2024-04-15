@@ -10,10 +10,13 @@ import '_schedule.dart';
 import '_standings.dart';
 
 void main() {
+  final volleymaticModel = VolleymaticModel(); // gets the model
+  volleymaticModel.initializeSupabase(); // initializes the Supabase database
+
   runApp(ChangeNotifierProvider(
       // creates a change notifier provider for the volleymatic model so that it will change if notified
-      create: (context) => VolleymaticModel(),
-      child: const MainApp()));
+      create: (context) => volleymaticModel,
+      child: MaterialApp(home: Welcome())));
 }
 
 class MainApp extends StatefulWidget {
