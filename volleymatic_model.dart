@@ -167,4 +167,13 @@ class VolleymaticModel extends ChangeNotifier {
     }
   }
 
+  Future<String?> fetchClosestTournamentDate() async {
+    final response = await Supabase.instance.client
+        .from('tournaments')
+        .select('date')
+        .order('date', ascending: true)
+        .limit(1);
+    return response.toString();
+  }
+
 }
