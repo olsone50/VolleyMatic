@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'tournament.dart';
@@ -5,17 +7,11 @@ import 'team.dart';
 import 'game.dart';
 
 class VolleymaticModel extends ChangeNotifier {
-  late final SupabaseClient _supabaseClient;
+  final SupabaseClient supabase;
 
-  VolleymaticModel({required SupabaseClient supabase}) { // Add the 'supabase' parameter
-    _supabaseClient = supabase; // Initialize _supabaseClient with the provided SupabaseClient
-  }
+  VolleymaticModel({required this.supabase});
 
-  Future<List<Map<String, dynamic>>> fetchTournaments() async {
-    final response = await _supabaseClient.from('tournaments').select();
-    return response;
-  }
-
+  /// delete later
   var tournaments = [ // creates a list of tournaments that stores the name, location, date, and number of courts
     Tournament(name: 'Bay Bash 14s/15s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 13), numCourts: 3),
     Tournament(name: 'Ice Breaker 17s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 14), numCourts: 3),
@@ -81,21 +77,94 @@ class VolleymaticModel extends ChangeNotifier {
     return names; // returns a list of all the team names from pool 2
   }
 
-  addTeam(tournamentList, String text, int parse, String path) {
-    // add the team to the list of teams
-    // add the team to the database
+  /// fetches the list of tournaments from the database
+  PostgrestFilterBuilder<PostgrestList> fetchTournaments() {
+    return supabase.from('tournaments').select(); // fetches all the tournaments from the database
   }
 
-  void addTournament(String text, String text2, String text3, int parse) {
-    // add the tournament to the list of tournaments
-    // add the tournament to the database
+  /// fetches the list of tournaments on a specific date from the database
+  PostgrestFilterBuilder<PostgrestList> fetchTournamentsOnDate(String date){
+    return supabase.from('tournaments').select().eq('date', date); // selects the tournaments that are on the date selected
   }
 
-  fetchTeamsFromTournament(tournamentList) {
-    // fetch the teams from the database
+  /// fetches the tournament information from the database
+  PostgrestFilterBuilder<PostgrestList> fetchTournament(int tournamentId){
+    return supabase.from('tournaments').select().eq('tournament_id', tournamentId); // selects the tournament using the id
   }
 
-  fetchMatchesFromId(int i) {
-    // fetch the matches from the database
+  /// fetches the list of teams from a specific tournament from the database
+  PostgrestFilterBuilder<PostgrestList> fetchTeamsFromTournament(int tournamentId){
+    return supabase.from('teams').select().eq('tournament_id', tournamentId); // selects the team names and ranks from the team database
   }
+
+  /// fetches the specific game from the database
+  PostgrestFilterBuilder<PostgrestList> fetchGameFromId(int gameId){
+    return supabase.from('games').select().eq('game_id', gameId); // selects the games that correspond to the gameId
+  }
+
+  /// fetches the specific match from the database
+  PostgrestFilterBuilder<PostgrestList> fetchMatchesFromId(int matchId){
+    return supabase.from('bracket_matchups').select().eq('match_id', matchId); // selects the matches that correspond to the matchId 
+  }
+
+  /// Adds a new team to the teams table
+  Future<void> addTeam(int tournamentId, String name, int rank, String rosterImg) async {
+    final response = await supabase.from('teams').insert([{
+      'tournament_id': tournamentId,
+      'name': name,
+      'rank': rank,
+      'roster_img': rosterImg,
+      'set_wins': 0, // sets set wins and losses to zero
+      'set_losses': 0
+    }]);
+
+    if (response.error != null) {
+      throw Exception('Failed to add team'); // throw an exception if insertion fails
+    }
+  }
+
+  /// Adds a new tournament to the tournaments table
+  Future<void> addTournament(String name, String location, String date, int numCourts) async {
+    final response = await supabase.from('tournaments').insert([{
+      'name': name,  // inserts the tournament with the given information
+      'location': location,
+      'date': date,
+      'num_courts': numCourts
+    }]);
+  }
+
+  /// Function to update scores in the database
+  Future<void> updateScores(int team1Score1, int team1Score2, team2Score1, team2Score2) async {
+    await supabase.from('scores').upsert([ // inserts team scores into database
+      {
+        'team1_set1': team1Score1,
+        'team1_set2': team1Score2,
+        'team2_set1': team2Score1,
+        'team2_set2': team2Score2,
+      }
+    ]);
+  }
+
+  /// creates an account for the user with the email, password, username, and club name
+  Future<void> createAccount(String email, String username, String password, String clubName) async {
+    final response = await supabase.auth.signUp(email: email, password: password, data: {'username': username, 'club_name': clubName});
+  }
+
+  /// logs in a user using email and password
+  Future<void> loginUser(String email, String password) async {
+    try {
+      final response = await supabase.auth.signInWithPassword( // signs in the user with email and password
+        email: email, 
+        password: password,
+      );
+      final session = response.session; // access to session
+      final user = response.user; // access to user
+
+      print('User signed in successfully: ${user!.email}'); // user signed in successfully
+    } catch (error) {
+      // Handle any errors that occur during sign-in
+      print('Error signing in: $error');
+    }
+  }
+
 }
