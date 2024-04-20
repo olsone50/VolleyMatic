@@ -11,7 +11,7 @@ import 'volleymatic_model.dart';
 /// actions. The user is pushed to that screen when clicked.
 class MatchDetails extends StatelessWidget {
   //***Modify constructor to retreive some game details from schedule_widget??***
-  MatchDetails({super.key, required this.model, required this.info});
+  const MatchDetails({super.key, required this.model, required this.info});
 
   final VolleymaticModel model;
   final dynamic info;

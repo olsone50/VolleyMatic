@@ -5,14 +5,16 @@ import 'team.dart';
 import 'game.dart';
 
 class VolleymaticModel extends ChangeNotifier {
-  void initializeSupabase() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  late final SupabaseClient _supabaseClient;
 
-    await Supabase.initialize( // gets the database functionality for the model
-      url: 'https://thssqujpqkjapvwqfdal.supabase.co', // supabase project URL
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoc3NxdWpwcWtqYXB2d3FmZGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNTg4NTYsImV4cCI6MjAyNzgzNDg1Nn0.HFtkIhXMrPTYkaFbSsJnssBCfJHKajNYUhQCtYrjZuQ',
-    );
-  } 
+  VolleymaticModel({required SupabaseClient supabase}) { // Add the 'supabase' parameter
+    _supabaseClient = supabase; // Initialize _supabaseClient with the provided SupabaseClient
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTournaments() async {
+    final response = await _supabaseClient.from('tournaments').select();
+    return response;
+  }
 
   var tournaments = [ // creates a list of tournaments that stores the name, location, date, and number of courts
     Tournament(name: 'Bay Bash 14s/15s', location: 'Sports Advantage Center', date: DateTime(2024, 4, 13), numCourts: 3),
