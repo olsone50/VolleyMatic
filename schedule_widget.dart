@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'volleymatic_model.dart';
 import 'game.dart';
-import 'package:tournament_bracket/tournament_bracket.dart';
+import 'tournament_bracket.dart';
 import 'team.dart';
 import 'match_details.dart';
 
