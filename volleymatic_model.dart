@@ -80,4 +80,22 @@ class VolleymaticModel extends ChangeNotifier {
     }
     return names; // returns a list of all the team names from pool 2
   }
+
+  addTeam(tournamentList, String text, int parse, String path) {
+    // add the team to the list of teams
+    // add the team to the database
+  }
+
+  void addTournament(String text, String text2, String text3, int parse) {
+    // add the tournament to the list of tournaments
+    // add the tournament to the database
+  }
+
+  fetchTeamsFromTournament(tournamentList) {
+    // fetch the teams from the database
+  }
+
+  fetchMatchesFromId(int i) {
+    // fetch the matches from the database
+  }
 }
