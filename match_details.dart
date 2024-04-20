@@ -1,64 +1,75 @@
+// ignore_for_file: prefer_const_constructors, must_be_immutable, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'roster_page.dart';
 import 'update_scores.dart';
+import 'volleymatic_model.dart';
 
-/// Name: Derek Gresser
-/// Date: 4/3/24
 /// Description: This widget displays the match details for a given matchup.
 /// When the team name is clicked, the user is pushed to the roster page.
 /// If the user is an admin a Update Scores button is available in the
 /// actions. The user is pushed to that screen when clicked.
-/// Bugs: Data is currently hard coded. Database not used yet.
 class MatchDetails extends StatelessWidget {
-  const MatchDetails({super.key});
+  //***Modify constructor to retreive some game details from schedule_widget??***
+  MatchDetails({super.key, required this.model, required this.info});
 
+  final VolleymaticModel model;
+  final dynamic info;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Volleymatic'),
+        title: SizedBox(
+            width: 70, height: 70, child: Image.asset('assets/logo.png')),
         centerTitle: true,
-        backgroundColor: Colors.red,
         actions: [
           updateScoresButton(context),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Container(
-            color: Colors.white, // Background color for "Match Details"
-            padding: const EdgeInsets.all(16.0),
-            child: const Text('Match Details',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                )),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red, // Background color for everything else
-                  borderRadius: BorderRadius.circular(20.0), // Rounded corners
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      detailsRow('Court 1\n8:00 AM'),
-                      linkedTeamName(context, '1W 17 National'),
-                      linkedTeamName(context, '1W 16 National'),
-                      detailsRow('Work Team:\n1W 18 National'),
-                    ],
+      body: FutureBuilder(
+        future: info,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final matchDetails = snapshot.data! as Map<String, dynamic>; // gets the match details 
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text('MATCH DETAILS',
+                    style:
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 48),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            detailsRow('Court Number: ${matchDetails['court_no'].toString()}'),
+                            linkedTeamName(context, matchDetails['team1']),
+                            linkedTeamName(context, matchDetails['team2']),
+                            detailsRow('Work Team: ${matchDetails['work_team']}'),
+                            detailsRow('Time: ${matchDetails['time'].toString()}'),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
+              ],
+            );
+          }
+        },
       ),
     );
   }
@@ -97,13 +108,16 @@ class MatchDetails extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const UpdateScores()),
+          MaterialPageRoute(
+              builder: (context) =>
+                  UpdateScores(team1Name, team2Name, model: model)), // goes to the update scores page
         );
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.red, // makes the button red
       ),
-      child: const Text('Update Scores'),
+      child: const Text('Update Scores',
+          style: TextStyle(color: Colors.white)), // makes the text white
     );
   }
 
