@@ -87,7 +87,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   /// the different pools for each tournament 
   Expanded _poolPlayView() {
     return Expanded(
-        child: Column(
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch, // streches each item to the sides of the screen
       children: [
           Container(
@@ -133,8 +133,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
           ),
           subtitle: Text('Court ${game.courtNum} - ${game.time}'), // displays the court number and game time
           onTap: () {
+            final game = widget.model.fetchGameFromId(1); // gets the game from the game id FIX THIS
             Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MatchDetails())); // goes to match details when clicked
+                          MaterialPageRoute(builder: (context) => MatchDetails(model: widget.model, info: game))); // goes to match details when clicked
           },
         );
       },
@@ -166,8 +167,10 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
         }
         return false;
       },
-      onContainerTapDown: (model, tapDownDetails) => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MatchDetails())), // goes to match details when clicked
+      onContainerTapDown: (model, tapDownDetails) { 
+              final match = widget.model.fetchMatchesFromId(1); // gets the match from the match id FIX THIS
+              Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MatchDetails(model: widget.model, info: match)));}, // goes to match details when clicked
       hadderBuilder: (context, index, count) => Text(''), // no labels above each game
       connectorColor: Colors.red,
       teamContainerDecoration: BracketBoxDecroction( // makes the boxes around the names red

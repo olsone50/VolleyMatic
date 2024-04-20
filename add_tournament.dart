@@ -1,15 +1,18 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
+import 'volleymatic_model.dart';
 import 'package:flutter/material.dart';
 import 'add_teams.dart';
 
 class AddTournament extends StatelessWidget {
-  AddTournament({super.key});
+  AddTournament({super.key, required this.model});
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-  TextEditingController numCourtsController = TextEditingController();
+  final VolleymaticModel model; // gets model for the database
+
+  TextEditingController name = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController date = TextEditingController();
+  TextEditingController numCourt = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +32,10 @@ class AddTournament extends StatelessWidget {
             SizedBox(height: 30), // adds space between textfields and button
             SizedBox(child: OutlinedButton( // creates an outlined button for add tournaments
                     onPressed: () {
+                      model.addTournament(name.text, location.text, date.text, int.parse(numCourt.text)); // adds tournament to the model
+                      final tournament = [name.text, date.text, location.text]; // makes a list of the tournament information
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AddTeams())); // goes to add teams on pressed
+                          MaterialPageRoute(builder: (context) => AddTeams(tournamentList: tournament, model: model))); // goes to add teams on pressed
                     },
                     style: ButtonStyle(
                       side: MaterialStateBorderSide.resolveWith(
@@ -44,19 +49,21 @@ class AddTournament extends StatelessWidget {
     );
   }
 
+  /// returns a {Column} of textfields for the add tournament function including tournament name, location,
+  /// date, and number of courts
   Column textFields() {
-    return Column( children: [TextField(
-                controller: nameController,
+    return Column( children: [TextField( // textfield for tournament name
+                controller: name,
                 decoration: InputDecoration(labelText: 'Tournament Name')),
-            TextField(
-                controller: locationController,
+            TextField( // textfields for location
+                controller: location, 
                 decoration: InputDecoration(labelText: 'Location')),
-            TextField(
-                controller: dateController,
+            TextField(// textfield for date
+                controller: date,
                 decoration: InputDecoration(labelText: 'Date'),
                 keyboardType: TextInputType.datetime),
-            TextField(
-                controller: numCourtsController,
+            TextField( // textfield for number of courts
+                controller: numCourt,
                 decoration: InputDecoration(labelText: 'Number of Courts'),
                 keyboardType: TextInputType.number)
       ]);
