@@ -1,72 +1,32 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:volley_matic/upcoming_tournaments_widget.dart';
-import 'tournament.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'volley_matic.dart';
+import 'volleymatic_model.dart';
+import 'package:intl/intl.dart';
+
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key, required VolleymaticModel model});
+  const Calendar({super.key, required this.model});
+
+  final VolleymaticModel model;
 
   @override
   State<Calendar> createState() => CalendarWidget();
 }
 
 class CalendarWidget extends State<Calendar> {
-
-  var tournaments = VolleymaticModel().tournaments;
+  DateTime? _selectedDate = DateTime.now(); // makes a variable for the current selected date
 
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
     final DateTime firstDay = DateTime(now.year, now.month - 1, now.day);
     final DateTime lastDay = DateTime(now.year, now.month + 1, now.day);
-    final DateTime focusedDay = now;
+    final DateTime focusedDay = now; 
 
-    Map<DateTime, List<String>> events = {};
-
-    for (var tournament in tournaments) {
-      DateTime date = tournament.date;
-      events.update(date, (value) {
-        // ignore: unnecessary_null_comparison
-        if (value != null) {
-          value.add(tournament.name);
-          return value;
-        } else {
-          return [tournament.name];
-        }
-      }, ifAbsent: () => [tournament.name]);
-    }
-
-    // Find the closest upcoming tournament
-    Tournament? closestTournament;
-    DateTime closestDate = DateTime(9999, 12, 31); // Initialize with a far future date
-
-    for (var tournament in tournaments) {
-      DateTime date = tournament.date;
-      if (date.isAfter(now) && date.isBefore(closestDate)) {
-        closestDate = date;
-        closestTournament = tournament;
-      }
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Upcoming Tournaments'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.list),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UpcomingTournaments(model: VolleymaticModel())),
-              );
-            }
-          )
-        ],
-      ),
-      body: Column(
+    return Column(
       children: [
-        // Calendar
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TableCalendar(
@@ -77,12 +37,13 @@ class CalendarWidget extends State<Calendar> {
               weekendStyle: TextStyle(color: Colors.red),
             ),
             calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.5),
+              todayTextStyle: TextStyle(color: Colors.black), // makes the font color black for today's date so that it shows up
+              todayDecoration:  BoxDecoration(
+                border: Border.all(color: Colors.red), // outlines box for today's date
                 shape: BoxShape.circle,
               ),
-              selectedDecoration: const BoxDecoration(
-                color: Colors.red,
+              selectedDecoration: BoxDecoration( // makes the selected date have a red circle
+                color: Colors.red.withOpacity(0.8),
                 shape: BoxShape.circle,
               ),
             ),
@@ -94,44 +55,48 @@ class CalendarWidget extends State<Calendar> {
             },
             calendarFormat: CalendarFormat.month,
             startingDayOfWeek: StartingDayOfWeek.sunday,
-            eventLoader: (day) {
-              return events[day] ?? [];
+            selectedDayPredicate: (DateTime day) {
+              return isSameDay(day, _selectedDate);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDate = selectedDay; // switches the selected day
+              });
             },
           ),
         ),
-        // Closest tournament card
-        closestTournament != null
-            ? Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  color: Colors.red,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Closest Tournament:',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Title: ${closestTournament.name}',
-                          style: const TextStyle(color: Colors.white)),
-                        Text(
-                          'Date: ${closestTournament.date}',
-                          style: const TextStyle(color: Colors.white)),
-                        Text(
-                          'Location: ${closestTournament.location}',
-                          style: const TextStyle(color: Colors.white)),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            : Container(), // If no upcoming tournament found, display an empty container
+        if (_selectedDate != null) _buildTournamentList(), // displays the tournaments list for the date selected
       ],
-    ),
+    );
+  }
+
+  /// returns an {Expanded} widget that has a {ListView} of all the tournaments that are on a selected date
+  Expanded _buildTournamentList(){
+    return Expanded(
+      child: FutureBuilder (
+        future: widget.model.fetchTournamentsOnDate(DateFormat('MM-dd-yyyy').format(_selectedDate!)), // gets the tournaments from the database
+        builder:(context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator()); // display loading symbol if still loading
+              }
+                final tournaments = snapshot.data!;
+                return ListView.builder(
+                  itemCount: tournaments.length,
+                  itemBuilder: ((context, index) {
+                    final tournament = tournaments[index];
+                    return ListTile(
+                      leading: Container(height: 5, width: 5, color: Colors.red),
+                      title: Text(tournament['name']),
+                      subtitle: Text.rich(
+                        TextSpan(
+                          text: '${tournament['date']}\n${tournament['location']}',
+                        ),
+                      ),
+                    );
+                  }),
+                );
+            },
+        ),
     );
   }
 }

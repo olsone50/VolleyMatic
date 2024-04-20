@@ -1,72 +1,40 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 
-/// Name: Derek Gresser
-/// Date: 4/3/24
 /// Description: This widget displays the roster of a given team.
 /// The team name is displayed at the top with a list view of the roster
 /// and coaches.
-/// Bugs: Data is currently hard coded. Database not used yet.
 class RosterPage extends StatelessWidget {
   final String teamName;
-  final List<String> rosterList = [
-    'Sarah Johnson',
-    'Emily Brown',
-    'Alexa Ramirez',
-    'Jessica Lee',
-    'Amanda Thompson',
-    'Mia Smith',
-    'Tiffany Wells',
-    'Erica Rhimes',
-    'Julie Potts',
-  ];
 
-  RosterPage({super.key, required this.teamName});
+  const RosterPage({super.key, required this.teamName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Team Roster'),
-        centerTitle: true,
-        backgroundColor: Colors.red,
+        title: SizedBox(width: 70, height: 70, child: Image.asset('assets/logo.png')), centerTitle: true,
       ),
       body: Column(
         children: [
+          SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(teamName,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    decoration: TextDecoration.underline,
-                  )),
-            ],
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red, // set the container background color to red
+                  ),
+                  child: TextButton(onPressed: null, child: Text(teamName,
+                    style: const TextStyle( // sets text background color to red 
+                      fontSize: 24,
+                      color: Colors.white,
+                    ))),
+              ),
+          ),],
           ),
-          //Players list view
-          Expanded(
-            child: ListView.builder(
-              itemCount: rosterList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  dense: true,
-                  leading: Text((index + 1).toString()),
-                  title: Text(rosterList[index],
-                      style: const TextStyle(
-                        fontSize: 16,
-                      )),
-                );
-              },
-            ),
-          ),
-          //Coaches list tile
-          const ListTile(
-            dense: true,
-            title: Text('Coaches:\nLisa Smith\nRyan Anderson',
-                style: TextStyle(
-                  fontSize: 14,
-                )),
-          ),
-          const SizedBox(height: 18), //Space below bottom
+          SizedBox(child: Text('assets/1W 16 Crimson Roster.png')),
         ],
       ),
     );
