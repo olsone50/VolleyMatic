@@ -1,69 +1,30 @@
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
+
+import 'package:final_project_navigation/add_tournament.dart';
+import 'package:final_project_navigation/schedule_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:volley_matic/match_details.dart';
-import 'package:volley_matic/tournament.dart';
-import '_calendar.dart';
-import 'volley_matic.dart';
+import 'calendar.dart';
+import 'volleymatic_model.dart';
 
 class UpcomingTournaments extends StatefulWidget {
-  const UpcomingTournaments({super.key, required VolleymaticModel model});
+  UpcomingTournaments({super.key, required this.model});
+
+  final VolleymaticModel model; // gets model for the app
 
   @override
   State<UpcomingTournaments> createState() => UpcomingTournamentsWidget();
 }
 
 class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
-
-  var tournaments = VolleymaticModel().tournaments;
+  bool showListView = true; // show list view is set to true
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Upcoming Tournaments'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Calendar(model: VolleymaticModel())),
-              );
-            }
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: tournaments.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.red,
-                  child: ListTile(
-                    onTap: () { tournamentTapped(tournaments[index]); },
-                    title: Text(
-                      tournaments[index].name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Date: ${tournaments[index].date}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          'Location: ${tournaments[index].location}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+      if(showListView){
+          return Column(children: [
+            _listViewOrCalendarView(),
+            Expanded(
+            child: _listOfTournaments(), // displays the tournaments
           ),
           Container(
             alignment: Alignment.center,
@@ -82,18 +43,89 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
                 },
               ),
             ),
-          ),
-        ],
-      ),
+          )]);
+      }
+      else {
+        return Column(children: 
+        [_listViewOrCalendarView(),
+        Expanded(child: Calendar(model: widget.model))]);
+      }
+  }
+
+  /// returns a {FutureBuilder} of the list of tournaments from the database
+  FutureBuilder _listOfTournaments(){
+    return FutureBuilder( 
+              future: widget.model.fetchTournaments(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final tournaments = snapshot.data!;
+                return ListView.builder(
+                  itemCount: tournaments.length,
+                  itemBuilder: (context, index) {
+                    final tournament = tournaments[index]; // gets tournament
+                    return Card(
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.red,
+                      child: ListTile(
+                        onTap: () { tournamentTapped(); },
+                        title: Text(
+                          tournament['name'],
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tournament['date'], // gets the date of the tournament 
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              tournament['location'], // gets the location of the tournament
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+              );
+          });
+  }
+
+  /// returns a row that says upcoming tournaments with either a calendar icon or list icon
+  Container _listViewOrCalendarView() {
+    return Container(
+      padding: const EdgeInsets.all(8.0), // adds padding
+      child: Row(children: [
+        Text('UPCOMING TOURNAMENTS', // displays upcoming tournaments text
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold)), // bolds the text name
+        Spacer(), // adds space between text and icon
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                showListView = !showListView; // toggle the view state to show list view or show calendar view
+              });
+            },
+            child: showListView ? Icon(Icons.calendar_today) : Icon(Icons.list))
+      ]),
     );
   }
 
-  tournamentTapped(Tournament tournaments) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
+  /// shows the {ScheduleWidget} screen
+  tournamentTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ScheduleWidget(model: widget.model)),
+    );
   }
 
-  //Should Navigate to add tournments page but navigates to MatchDetails as placeholder
+  /// shows the {AddTournament} screen
   addTapped() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchDetails()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => AddTournament(model: widget.model)));
   }
 }
