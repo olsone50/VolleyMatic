@@ -1,76 +1,96 @@
+// ignore_for_file: prefer_const_constructors, dangling_library_doc_comments
+
+/// Names: Carissa Engebose, Evan Olson, Derek Gresser, Luke Kastern 
+/// Date: 4/19/2024
+/// Description: An app that has four tabs to display upcoming tournaments (in both list and calendar view),
+/// schedule (pool play and bracket play), standings, and account information. 
+/// Bugs: The addTournament, Upcoming Tournaments, Standings, and Roster were all working, but the addTeam
+/// and schedule along with any of the account related tabs don't work yet. 
+/// Reflection: It took us a little time to figure out how to get specific information back from the database 
+/// and finding how to use the information without using a FutureBuilder. There was a lot of information that we
+/// needed from our database that wasn't working like it was supposed to while running the app. At one point, we could
+/// see all the tournaments from the database that were added, but then it just showed a circular progress indicator
+/// for a long time.
+/// 
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:volley_matic/volley_matic.dart';
-//import 'volleymatic_model.dart';
-import 'upcoming_tournaments_widget.dart';
-//import 'schedule_widget.dart';
-//import 'standings_widget.dart';
-import 'account_settings.dart';
-import '_schedule.dart';
-import '_standings.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'volleymatic_model.dart';
+import 'main_app.dart';
+import 'login.dart';
 
-void main() {
-  final volleymaticModel = VolleymaticModel(); // gets the model
-  volleymaticModel.initializeSupabase(); // initializes the Supabase database
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://thssqujpqkjapvwqfdal.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoc3NxdWpwcWtqYXB2d3FmZGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIyNTg4NTYsImV4cCI6MjAyNzgzNDg1Nn0.HFtkIhXMrPTYkaFbSsJnssBCfJHKajNYUhQCtYrjZuQ',
+  );
+  final supabase = Supabase.instance.client; // opens a connection to Supabase
 
   runApp(ChangeNotifierProvider(
       // creates a change notifier provider for the volleymatic model so that it will change if notified
-      create: (context) => volleymaticModel,
+      create: (context) => VolleymaticModel(supabase: supabase),
       child: MaterialApp(home: Welcome())));
 }
 
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
-
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  final List<Widget> _tabs = [
-    Consumer<VolleymaticModel>(
-      builder: (context, volleymaticModel, child) =>
-          UpcomingTournaments(model: volleymaticModel),
-    ),
-    Consumer<VolleymaticModel>(
-        builder: (context, volleymaticModel, child) =>
-            Schedule(model: volleymaticModel)),
-    Consumer<VolleymaticModel>(
-      builder: (context, volleymaticModel, child) =>
-          Standings(model: volleymaticModel),
-    ),
-    Consumer<VolleymaticModel>(
-      builder: (context, volleymaticModel, child) =>
-          Settings(model: volleymaticModel),
-    ),
-  ];
-  int selectedTabIndex = 0;
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(primaryColor: Colors.red), // makes the primary color red
-        home: Scaffold(
-          //appBar: AppBar(title: SizedBox(width: 70, height: 70, child: Image.asset('assets/logo.png')), centerTitle: true,), // puts the logo in the app bar and centers it
-          body: _tabs[selectedTabIndex], // sets tab view to the selected tab
-          bottomNavigationBar: BottomNavigationBar( // creates a bottom navigation bar for the app
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Upcoming'), // upcoming tournaments tab
-              BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Schedule'), // schedule tab
-              BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Standings'), // standings tab
-              BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Account Settings'), // account settings tab
-            ],
-            currentIndex: selectedTabIndex,
-            onTap: _tabSwitched, // switches the tab view when clicked
-            selectedItemColor: Colors.red, // makees the selected tab red
-            unselectedItemColor: const Color.fromARGB(255, 135, 132, 131), // makes the unselected tabs gray
-          ),
-        ));
+    return Scaffold(
+        body: Column(children: [
+          _coloredBox(const Color.fromARGB(255, 251, 27, 11)), // creates a designed box effect
+          _coloredBox(const Color.fromARGB(255, 251, 27, 11).withOpacity(0.75)),
+          _coloredBox(const Color.fromARGB(255, 251, 27, 11).withOpacity(0.40)),
+          Spacer(), // adds a space
+          SizedBox(width: 90, height: 90, child: Image.asset('assets/logo.png')),
+          SizedBox(height: 30),
+          Text('WELCOME!', style: TextStyle( // creates a welcome title
+              fontSize: 30,
+              fontWeight: FontWeight.bold)),
+          SizedBox(height: 50), // adds a space
+          ElevatedButton(
+              // creates an elevated button for login
+              onPressed: () {Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                );}, // goes to login on pressed
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,), 
+              child: Text('LOGIN',style: TextStyle(color: Colors.white, fontSize: 25), // sets login text
+              )),
+              SizedBox(height: 20),
+              OutlinedButton( // creates an outlined button for use as guest
+                    onPressed: () {Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainApp()),);}, // runs main app when pressed
+                    style: ButtonStyle(
+                      side: MaterialStateBorderSide.resolveWith(
+                        (states) => BorderSide(color: Colors.red), // set border color to red
+                    ),),
+                    child: Text('Continue as Guest',style: TextStyle(color: Colors.red, fontSize: 20),
+              )),
+        Spacer(), // adds a space
+        _coloredBox(const Color.fromARGB(255, 251, 27, 11).withOpacity(0.40)), // creates a designed box effect
+        _coloredBox(const Color.fromARGB(255, 251, 27, 11).withOpacity(0.75)),
+        _coloredBox(const Color.fromARGB(255, 251, 27, 11)), 
+        ],
+        )
+    );
   }
 
-  void _tabSwitched(int index) {
-    setState(() {
-      selectedTabIndex = index; // sets the selected tab index to the tab index when clicked
-    });
+  /// returns a {Container} of the box from the color given
+  Container _coloredBox(Color color){
+    return Container( // creates a box from a color
+      height: 50,
+      width: 450,
+      decoration: BoxDecoration(
+        color: color,
+      ),
+    );
   }
 }
+
+
