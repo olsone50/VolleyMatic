@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:volley_matic/volley_matic.dart';
+import 'volleymatic_model.dart';
 
 class Schedule extends StatefulWidget {
   const Schedule({super.key, required VolleymaticModel model});

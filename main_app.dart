@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'volleymatic_model.dart';
-import 'upcoming_tournaments.dart';
+import 'upcoming_tournaments_widget.dart';
 import 'schedule_widget.dart';
-import 'standings.dart';
+import '_standings.dart';
 import 'account_settings.dart';
 
 
@@ -29,7 +29,7 @@ class _MainAppState extends State<MainApp> {
     ),
     Consumer<VolleymaticModel>(
       builder: (context, volleymaticModel, child) =>
-          AccountSettings(model: volleymaticModel),
+          Settings(model: volleymaticModel),
     ),
   ];
   int selectedTabIndex = 0;

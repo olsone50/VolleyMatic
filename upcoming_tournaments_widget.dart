@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
-import 'package:final_project_navigation/add_tournament.dart';
-import 'package:final_project_navigation/schedule_widget.dart';
+import 'add_tournament.dart';
+import 'schedule_widget.dart';
 import 'package:flutter/material.dart';
-import 'calendar.dart';
+import '_calendar.dart';
 import 'volleymatic_model.dart';
 
 class UpcomingTournaments extends StatefulWidget {
