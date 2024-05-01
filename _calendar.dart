@@ -84,12 +84,17 @@ class CalendarWidget extends State<Calendar> {
           ),
         ),
         if (_closestTournamentDate != null)
-          Container(
+          Card(
             color: Colors.red, // Red background color
-            padding: EdgeInsets.all(8),
-            child: Text(
-              'Closest Tournament Date: $_closestTournamentDate',
-              style: TextStyle(color: Colors.white),
+            margin: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 300,
+              height: 50,
+              child: Center(
+                  child: Text(
+                'Closest Tournament Date: $_closestTournamentDate',
+                style: TextStyle(color: Colors.white),
+              )),
             ),
           ),
         if (_selectedDate != null)
@@ -131,4 +136,3 @@ class CalendarWidget extends State<Calendar> {
     );
   }
 }
-
