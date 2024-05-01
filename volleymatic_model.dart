@@ -163,4 +163,22 @@ class VolleymaticModel extends ChangeNotifier {
       print('Error signing in: $error');
     }
   }
+<<<<<<< Updated upstream
+=======
+
+    /// fetches the closest tournament date from today's date
+  Future<String?> fetchClosestTournamentDate() async {
+    final response = await supabase
+        .from('tournaments')
+        .select('date')
+        .order('date', ascending: true)
+        .limit(1);
+    Map<String, dynamic> tournament = response[0];
+    if (tournament.containsKey('date')) {
+      return tournament['date'].toString(); // return just the date from the database
+    }
+    return null; // return null if no date is found or if the response is empty
+  }
+
+>>>>>>> Stashed changes
 }
