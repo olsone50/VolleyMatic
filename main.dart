@@ -127,19 +127,26 @@ class Welcome extends State<WelcomePage> {
               setState(() {
                 isLoading = true;
               });
+
+              // Get the NavigatorState before the async operation
+              NavigatorState navigator = Navigator.of(context);
+
               dynamic loginValue = await userLogin(
                 email: _emailController.text,
                 password: _passwordController.text,
               );
+
               setState(() {
                 isLoading = false;
               });
-              if (loginValue != null) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainApp()));
-              }
-            }, // goes to login on pressed
 
+              if (loginValue != null) {
+                // Use the NavigatorState to navigate
+                navigator.push(
+                  MaterialPageRoute(builder: (context) => MainApp()),
+                );
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               minimumSize: Size(200, 50),
@@ -211,4 +218,3 @@ class Welcome extends State<WelcomePage> {
     );
   }
 }
-
