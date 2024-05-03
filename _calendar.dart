@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'volleymatic_model.dart';
-
+import 'package:intl/intl.dart';
 
 class Calendar extends StatefulWidget {
   const Calendar({super.key, required this.model});
@@ -84,12 +84,17 @@ class CalendarWidget extends State<Calendar> {
           ),
         ),
         if (_closestTournamentDate != null)
-          Container(
+          Card(
             color: Colors.red, // Red background color
-            padding: EdgeInsets.all(8),
-            child: Text(
-              'Closest Tournament Date: $_closestTournamentDate',
-              style: TextStyle(color: Colors.white),
+            margin: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 300,
+              height: 50,
+              child: Center(
+                  child: Text(
+                'Closest Tournament Date: $_closestTournamentDate',
+                style: TextStyle(color: Colors.white),
+              )),
             ),
           ),
         if (_selectedDate != null)
@@ -102,7 +107,7 @@ class CalendarWidget extends State<Calendar> {
   Expanded _buildTournamentList() {
     return Expanded(
       child: FutureBuilder(
-        future: widget.model.fetchTournamentsOnDate(DateFormat('MM/dd/yyyy')
+        future: widget.model.fetchTournamentsOnDate(DateFormat('MM-dd-yyyy')
             .format(_selectedDate!)), // gets the tournaments from the database
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -116,7 +121,7 @@ class CalendarWidget extends State<Calendar> {
             itemBuilder: ((context, index) {
               final tournament = tournaments[index];
               return ListTile(
-                leading: Container(height: 40, width: 10, color: Colors.red),
+                leading: Container(height: 5, width: 5, color: Colors.red),
                 title: Text(tournament['name']),
                 subtitle: Text.rich(
                   TextSpan(
