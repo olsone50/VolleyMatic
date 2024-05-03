@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:volleymatic/volleymatic_model.dart';
 
 /// Name: Derek Gresser
 /// Date: 4/3/24
@@ -8,7 +9,8 @@ import 'package:flutter/material.dart';
 /// button that currently only pops the navigator.
 /// Bugs: Data is currently hard coded. Database not used yet.
 class UpdateScores extends StatefulWidget {
-  const UpdateScores({super.key});
+  const UpdateScores(String team1name, String team2name,
+      {super.key, required VolleymaticModel model});
 
   @override
   State<UpdateScores> createState() => UpdateScoresState();
