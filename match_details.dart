@@ -11,11 +11,11 @@ import 'volleymatic_model.dart';
 /// actions. The user is pushed to that screen when clicked.
 class MatchDetails extends StatelessWidget {
   //***Modify constructor to retreive some game details from schedule_widget??***
-  MatchDetails({super.key, required this.model, required this.info});
+  const MatchDetails({super.key, required this.model, required this.info});
 
   final VolleymaticModel model;
   final dynamic info;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,8 @@ class MatchDetails extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            final matchDetails = snapshot.data! as Map<String, dynamic>; // gets the match details 
+            final matchDetails = snapshot.data!
+                as Map<String, dynamic>; // gets the match details
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -55,11 +56,14 @@ class MatchDetails extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            detailsRow('Court Number: ${matchDetails['court_no'].toString()}'),
+                            detailsRow(
+                                'Court Number: ${matchDetails['court_no'].toString()}'),
                             linkedTeamName(context, matchDetails['team1']),
                             linkedTeamName(context, matchDetails['team2']),
-                            detailsRow('Work Team: ${matchDetails['work_team']}'),
-                            detailsRow('Time: ${matchDetails['time'].toString()}'),
+                            detailsRow(
+                                'Work Team: ${matchDetails['work_team']}'),
+                            detailsRow(
+                                'Time: ${matchDetails['time'].toString()}'),
                           ],
                         ),
                       ),
@@ -104,13 +108,16 @@ class MatchDetails extends StatelessWidget {
 
   /// Returns a button that displays 'Update Scores'.
   Widget updateScoresButton(BuildContext context) {
+    final String team1Name = info['team1'];
+    final String team2Name = info['team2'];
+
     return ElevatedButton(
       onPressed: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  UpdateScores(team1Name, team2Name, model: model)), // goes to the update scores page
+              builder: (context) => UpdateScores(team1Name, team2Name,
+                  model: model)), // goes to the update scores page
         );
       },
       style: ElevatedButton.styleFrom(
