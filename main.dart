@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, dangling_library_doc_comments
+// ignore_for_file: prefer_const_constructors, dangling_library_doc_comments, use_build_context_synchronously
 
 /// Names: Carissa Engebose, Evan Olson, Derek Gresser, Luke Kastern
 /// Date: 4/19/2024
@@ -14,10 +14,10 @@
 ///
 
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register.dart';
+import 'user_model.dart';
 import 'volleymatic_model.dart';
 import 'main_app.dart';
 
@@ -30,10 +30,13 @@ void main() async {
   );
   final supabase = Supabase.instance.client; // opens a connection to Supabase
 
-  runApp(ChangeNotifierProvider(
-      // creates a change notifier provider for the volleymatic model so that it will change if notified
-      create: (context) => VolleymaticModel(supabase: supabase),
-      child: MaterialApp(home: WelcomePage())));
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(
+          create: (context) => VolleymaticModel(supabase: supabase)),
+      ChangeNotifierProvider(create: (_) => UserModel()),
+    ], child: MaterialApp(home: WelcomePage())),
+  );
 }
 
 class WelcomePage extends StatefulWidget {
@@ -50,6 +53,7 @@ class Welcome extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);
     return Scaffold(
         body: Column(
       children: [
@@ -94,6 +98,8 @@ class Welcome extends State<WelcomePage> {
                 isLoading = false;
               });
               if (loginValue == 'success') {
+                userModel.setUser(
+                    _usernameController.text, _passwordController.text);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const MainApp()));
               } else {
