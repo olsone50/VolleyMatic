@@ -26,10 +26,7 @@ class _MainAppState extends State<MainApp> {
       builder: (context, volleymaticModel, child) =>
           Standings(model: volleymaticModel),
     ),
-    Consumer<VolleymaticModel>(
-      builder: (context, volleymaticModel, child) =>
-          Settings(model: volleymaticModel),
-    ),
+    const SettingsPage(),
   ];
   int selectedTabIndex = 0;
 
