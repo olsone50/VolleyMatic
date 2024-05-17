@@ -14,7 +14,9 @@ class RosterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: SizedBox(width: 70, height: 70, child: Image.asset('assets/logo.png')), centerTitle: true,
+        title: SizedBox(
+            width: 70, height: 70, child: Image.asset('assets/logo.png')),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -24,15 +26,20 @@ class RosterPage extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.red, // set the container background color to red
+                    color:
+                        Colors.red, // set the container background color to red
                   ),
-                  child: TextButton(onPressed: null, child: Text(teamName,
-                    style: const TextStyle( // sets text background color to red 
-                      fontSize: 24,
-                      color: Colors.white,
-                    ))),
+                  child: TextButton(
+                      onPressed: null,
+                      child: Text(teamName,
+                          style: const TextStyle(
+                            // sets text background color to red
+                            fontSize: 24,
+                            color: Colors.white,
+                          ))),
+                ),
               ),
-          ),],
+            ],
           ),
           SizedBox(child: Text('assets/1W 16 Crimson Roster.png')),
         ],
