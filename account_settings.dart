@@ -1,149 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'volleymatic_model.dart';
+import 'package:provider/provider.dart';
+import 'main.dart';
+import 'user_model.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key, required VolleymaticModel model});
-
-  @override
-  State<Settings> createState() => SettingsWidget();
-}
-
-class SettingsWidget extends State<Settings> {
-  Future<Null> signOutWithGoogle() async {
-    const webClientId =
-        '274468659133-4mljqvk66mfoame9t67j84t55atk5qrj.apps.googleusercontent.com';
-    const androidClientId =
-        '274468659133-4h08ic3rj7s51f1aer47fqqk6f321oa1.apps.googleusercontent.com';
-
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: androidClientId,
-      serverClientId: webClientId,
-    );
-    await googleSignIn.signOut();
-  }
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SETTINGS', // displays upcoming tournaments text
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'SETTINGS',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'User Name:',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'John Doe',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Club Name:',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'Volleyball Club',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Upcoming Tournament:',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'Tournament 1',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigate to change password screen
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20), // Adjust the padding as needed
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                elevation: 4,
+                margin: const EdgeInsets.only(bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Username:',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      child: const Text(
-                        'Change Password',
-                        style: TextStyle(color: Colors.white),
+                      Text(
+                        userModel.username,
+                        style: const TextStyle(fontSize: 16),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        signOutWithGoogle();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20), // Adjust the padding as needed
-                      ),
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Delete account logic
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20), // Adjust the padding as needed
-                      ),
-                      child: const Text(
-                        'Delete Account',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                elevation: 4,
+                margin: const EdgeInsets.only(bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Password:',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        userModel.password,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          onPressed: () {
+            userModel.clearUser();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomePage()),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            minimumSize: const Size(double.infinity, 50),
           ),
-        ],
+          child: const Text(
+            'Logout',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        ),
       ),
     );
   }
