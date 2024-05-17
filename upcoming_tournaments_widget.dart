@@ -3,7 +3,7 @@
 import 'add_tournament.dart';
 import 'schedule_widget.dart';
 import 'package:flutter/material.dart';
-import '_calendar.dart';
+import 'calendar.dart';
 import 'volleymatic_model.dart';
 
 class UpcomingTournaments extends StatefulWidget {
@@ -20,78 +20,82 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
 
   @override
   Widget build(BuildContext context) {
-      if(showListView){
-          return Column(children: [
-            _listViewOrCalendarView(),
-            Expanded(
-            child: _listOfTournaments(), // displays the tournaments
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.add, color: Colors.white),
-                onPressed: () {
-                  addTapped();
-                },
-              ),
+    if (showListView) {
+      return Column(children: [
+        _listViewOrCalendarView(),
+        Expanded(
+          child: _listOfTournaments(), // displays the tournaments
+        ),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black,
             ),
-          )]);
-      }
-      else {
-        return Column(children: 
-        [_listViewOrCalendarView(),
-        Expanded(child: Calendar(model: widget.model))]);
-      }
+            child: IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {
+                addTapped();
+              },
+            ),
+          ),
+        )
+      ]);
+    } else {
+      return Column(children: [
+        _listViewOrCalendarView(),
+        Expanded(child: Calendar(model: widget.model))
+      ]);
+    }
   }
 
   /// returns a {FutureBuilder} of the list of tournaments from the database
-  FutureBuilder _listOfTournaments(){
-    return FutureBuilder( 
-              future: widget.model.fetchTournaments(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final tournaments = snapshot.data!;
-                return ListView.builder(
-                  itemCount: tournaments.length,
-                  itemBuilder: (context, index) {
-                    final tournament = tournaments[index]; // gets tournament
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      color: Colors.red,
-                      child: ListTile(
-                        onTap: () { tournamentTapped(); },
-                        title: Text(
-                          tournament['name'],
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              tournament['date'], // gets the date of the tournament 
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              tournament['location'], // gets the location of the tournament
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+  FutureBuilder _listOfTournaments() {
+    return FutureBuilder(
+        future: widget.model.fetchTournaments(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final tournaments = snapshot.data!;
+          return ListView.builder(
+            itemCount: tournaments.length,
+            itemBuilder: (context, index) {
+              final tournament = tournaments[index]; // gets tournament
+              return Card(
+                margin: const EdgeInsets.all(8.0),
+                color: Colors.red,
+                child: ListTile(
+                  onTap: () {
+                    tournamentTapped();
                   },
+                  title: Text(
+                    tournament['name'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tournament['date'], // gets the date of the tournament
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      Text(
+                        tournament[
+                            'location'], // gets the location of the tournament
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
               );
-          });
+            },
+          );
+        });
   }
 
   /// returns a row that says upcoming tournaments with either a calendar icon or list icon
@@ -107,7 +111,8 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
         ElevatedButton(
             onPressed: () {
               setState(() {
-                showListView = !showListView; // toggle the view state to show list view or show calendar view
+                showListView =
+                    !showListView; // toggle the view state to show list view or show calendar view
               });
             },
             child: showListView ? Icon(Icons.calendar_today) : Icon(Icons.list))
@@ -120,12 +125,15 @@ class UpcomingTournamentsWidget extends State<UpcomingTournaments> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ScheduleWidget(model: widget.model)),
+          builder: (context) => ScheduleWidget(model: widget.model)),
     );
   }
 
   /// shows the {AddTournament} screen
   addTapped() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => AddTournament(model: widget.model)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddTournament(model: widget.model)));
   }
 }
